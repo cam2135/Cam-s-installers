@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Cam's Installers</title>
+	<style>
+		body {
+			font-family: 'Segoe UI', Arial, sans-serif;
+			background: linear-gradient(135deg, #e0e7ff 0%, #f0fdfa 100%);
+			min-height: 100vh;
+			margin: 0;
+		}
+		.container {
+			max-width: 400px;
+			margin: 40px auto;
+			background: #fff;
+			border-radius: 18px;
+			box-shadow: 0 4px 24px rgba(0,0,0,0.08);
+			padding: 2.5em 2em 2em 2em;
+			text-align: center;
+		}
+		.avatar {
+			width: 80px;
+			height: 80px;
+			border-radius: 50%;
+			margin-bottom: 1em;
+			object-fit: cover;
+			border: 3px solid #6366f1;
+		}
+		h1 {
+			font-size: 2em;
+			margin-bottom: 0.2em;
+			color: #3730a3;
+		}
+		.installer-list {
+			display: flex;
+			flex-direction: column;
+			gap: 1em;
+			margin: 2em 0 1.5em 0;
+		}
+		.installer-btn {
+			background: #6366f1;
+			color: #fff;
+			border: none;
+			border-radius: 12px;
+			padding: 1em 0;
+			font-size: 1.1em;
+			font-weight: 500;
+			cursor: pointer;
+			transition: background 0.2s, transform 0.1s;
+			box-shadow: 0 2px 8px rgba(99,102,241,0.08);
+		}
+		.installer-btn:hover, .installer-btn.active {
+			background: #4338ca;
+			transform: translateY(-2px) scale(1.03);
+		}
+		#download-area {
+			margin-bottom: 1.5em;
+		}
+		#download-link {
+			display: inline-block;
+			background: #10b981;
+			color: #fff;
+			padding: 0.7em 1.5em;
+			border-radius: 8px;
+			text-decoration: none;
+			font-weight: 500;
+			margin-top: 0.5em;
+			transition: background 0.2s;
+		}
+		#download-link:hover {
+			background: #059669;
+		}
+		.readme-section {
+			background: #f3f4f6;
+			border-radius: 12px;
+			padding: 1.2em 1em;
+			margin-top: 1.5em;
+			text-align: left;
+			box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+			display: none;
+		}
+		.readme-section.active {
+			display: block;
+		}
+		@media (max-width: 500px) {
+			.container { padding: 1em 0.5em; }
+		}
+	</style>
+</head>
+<body>
+	<div class="container">
+		<img class="avatar" src="https://ui-avatars.com/api/?name=CH&background=6366f1&color=fff" alt="Avatar" />
+		<h1>Cam's Installers</h1>
+		<div class="installer-list">
+			<button class="installer-btn" data-installer="CHArchiveManagerInstaller.exe" data-readme="README.md">CHArchiveManagerInstaller</button>
+			<button class="installer-btn" data-installer="AutoClickerinstaller.exe" data-readme="README2.md">AutoClickerinstaller</button>
+		</div>
+		<div id="download-area" style="display:none;">
+			<a id="download-link" href="#" download>Download</a>
+		</div>
+		<div class="readme-section" id="readme-section">
+			<div id="readme-content">Loading README...</div>
+		</div>
+	</div>
+	   <script src="script.js"></script>
+	   <script>
+	   // Modern Linktree-like installer logic
+	   const installerButtons = document.querySelectorAll('.installer-btn');
+	   const downloadArea = document.getElementById('download-area');
+	   const downloadLink = document.getElementById('download-link');
+	   const readmeSection = document.getElementById('readme-section');
+	   let activeBtn = null;
+
+	   function showInstaller(installer, readme, label) {
+		   downloadLink.href = './' + installer;
+		   downloadLink.textContent = 'Download ' + label + ' (.exe)';
+		   downloadArea.style.display = 'block';
+		   readmeSection.classList.add('active');
+		   // Load README
+		   if (window.loadReadme) {
+			   window.loadReadme(readme);
+		   } else {
+			   document.getElementById('readme-content').innerText = 'Loading...';
+		   }
+	   }
+
+	   installerButtons.forEach(btn => {
+		   btn.addEventListener('click', function() {
+			   if (activeBtn) activeBtn.classList.remove('active');
+			   this.classList.add('active');
+			   activeBtn = this;
+			   const exe = this.getAttribute('data-installer');
+			   const readme = this.getAttribute('data-readme');
+			   showInstaller(exe, readme, this.textContent);
+		   });
+	   });
+
+	   // Hide README and download area by default
+	   downloadArea.style.display = 'none';
+	   readmeSection.classList.remove('active');
+
+	   // Auto-select the first installer on load
+	   window.addEventListener('DOMContentLoaded', () => {
+		   if (installerButtons[0]) installerButtons[0].click();
+	   });
+	   </script>
+</body>
+</html>
